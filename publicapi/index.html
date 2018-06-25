@@ -93,7 +93,7 @@
 <p>基础签名方式如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sign = MD5( appKey + noncestr + timestamp).toUpperCase()</span><br></pre></td></tr></table></figure>
 <p><strong><em>一般安全级别的接口，可能只需要基础签名即可。</em></strong></p>
-<h2 id="数据签名"><a href="#数据签名" class="headerlink" title="数据签名"></a>数据签名</h2><p><strong><em>安全级别中等的接口，需要基础签名即可。</em></strong></p>
+<h2 id="数据签名"><a href="#数据签名" class="headerlink" title="数据签名"></a>数据签名</h2><p><strong><em>安全级别中等的接口，只需要数据签名即可。</em></strong></p>
 <p>数据签名规则与通用签名规则一致,签名的数据为接口请求数据</p>
 <h2 id="联合签名"><a href="#联合签名" class="headerlink" title="联合签名"></a>联合签名</h2><p><strong><em>安全级别要求高的接口，需要进行联合签名。</em></strong></p>
 <p>第一步：</p>
@@ -103,17 +103,19 @@
 <h3 id="举例说明-（以此例子所示签名方式为准）"><a href="#举例说明-（以此例子所示签名方式为准）" class="headerlink" title="举例说明 （以此例子所示签名方式为准）"></a>举例说明 （以此例子所示签名方式为准）</h3><p>以代付接口参数为例：</p>
 <p>app_id=test</p>
 <p>app_key=123456</p>
+<p>store_no=s1234</p>
 <p>基础签名：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">baseSign = MD5( appKey + noncestr + timestamp).toUpperCase()</span><br></pre></td></tr></table></figure>
 <p>数据联合签名:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 按照 ASSCI排序请求参数：</span><br><span class="line">dataSignString = &quot;amount=1000&amp;in_open_id=xd8wjr9jr02kjf823jse94kio8&amp;notify_url=http://www.test.com/callback&amp;out_open_id=lJsDBB01QzGpBKOC7uaZB6D0QGZWBMCS&amp;out_order_no=2334234343zz&amp;title=test&quot;</span><br><span class="line">// 拼接appkey和基础签名</span><br><span class="line">dataSign = dataSignString + &quot;&amp;key=123456&quot; + &quot;&amp;basesign=&quot; + baseSign</span><br><span class="line"></span><br><span class="line">// 获得联合签名</span><br><span class="line">sign = basesign + &quot;.&quot; + MD5(dataSign).toUpperCase()</span><br></pre></td></tr></table></figure>
 <p>纯数据签名：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 按照 ASSCI排序请求参数：</span><br><span class="line">onlyDataSignString = agentpay_no=ds99fjjwekwerjfm&amp;app_id=test&amp;out_order_no=lJsDBB01QzGpBKOC7uaZB6D0QGZWBMCS&amp;status=1&amp;time=1517928240</span><br><span class="line"></span><br><span class="line">// 拼接appkey</span><br><span class="line">onlyDataSign = onlyDataSignString + &quot;&amp;key=123456&quot;</span><br><span class="line">// 获得数据签名</span><br><span class="line">onlySign = MD5(onlyDataSign).toUpperCase()</span><br></pre></td></tr></table></figure>
-<h2 id="接口基础说明"><a href="#接口基础说明" class="headerlink" title="接口基础说明"></a>接口基础说明</h2><h4 id="测试基地址-http-dev-vvchat-im"><a href="#测试基地址-http-dev-vvchat-im" class="headerlink" title="测试基地址: http://dev.vvchat.im"></a>测试基地址: <a href="http://dev.vvchat.im" target="_blank" rel="noopener">http://dev.vvchat.im</a></h4><h4 id="测试数据"><a href="#测试数据" class="headerlink" title="测试数据"></a>测试数据</h4><p>app_id: test</p>
+<h2 id="接口基础说明"><a href="#接口基础说明" class="headerlink" title="接口基础说明"></a>接口基础说明</h2><p>所有接口都是以JSON的形式传参数。Content-Type：application/json</p>
+<h4 id="测试基地址-http-dev-vvchat-im"><a href="#测试基地址-http-dev-vvchat-im" class="headerlink" title="测试基地址: http://dev.vvchat.im"></a>测试基地址: <a href="http://dev.vvchat.im" target="_blank" rel="noopener">http://dev.vvchat.im</a></h4><h4 id="测试数据"><a href="#测试数据" class="headerlink" title="测试数据"></a>测试数据</h4><p>app_id: test</p>
 <p>app_key: 123456</p>
 <p>out_open_id:  lJsDBB01QzGpBKOC7uaZB6D0QGZWBMCS  // 出款账户</p>
 <p><strong><em>注意：接口使用那种签名会有标记</em></strong></p>
-<h2 id="统一下单接口"><a href="#统一下单接口" class="headerlink" title="统一下单接口"></a>统一下单接口</h2><p><strong>数据签名</strong></p>
+<h2 id="统一下单接口"><a href="#统一下单接口" class="headerlink" title="统一下单接口"></a>统一下单接口</h2><p>此接口采用 <strong>数据签名</strong> 方式</p>
 <blockquote>
 <p>请求地址</p>
 </blockquote>
@@ -146,7 +148,7 @@
 <td style="text-align:left">store_no</td>
 <td style="text-align:left">是</td>
 <td style="text-align:left">string</td>
-<td style="text-align:left">s123</td>
+<td style="text-align:left">s1234</td>
 <td style="text-align:left">平台发放</td>
 </tr>
 <tr>
